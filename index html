@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Bensin Online</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚗 Kalkulator Bensin Online</h1>
+            <p>Hitung konsumsi bensin dan jarak tempuh kendaraan Anda</p>
+        </header>
+
+        <!-- Hitung Konsumsi Bensin -->
+        <section class="calculator">
+            <h2>📊 Hitung Konsumsi Bensin</h2>
+            <div class="form-group">
+                <label for="jarak">Jarak Tempuh (km):</label>
+                <input type="number" id="jarak" step="0.1" placeholder="Contoh: 300">
+            </div>
+            <div class="form-group">
+                <label for="bensin">Bensin Terpakai (liter):</label>
+                <input type="number" id="bensin" step="0.1" placeholder="Contoh: 25">
+            </div>
+            <button onclick="hitungKonsumsi()" class="btn btn-primary">Hitung Konsumsi</button>
+            <div id="hasilKonsumsi" class="result"></div>
+        </section>
+
+        <!-- Hitung Jarak Tempuh -->
+        <section class="calculator">
+            <h2>📍 Hitung Jarak Tempuh</h2>
+            <div class="form-group">
+                <label for="bensin2">Jumlah Bensin (liter):</label>
+                <input type="number" id="bensin2" step="0.1" placeholder="Contoh: 30">
+            </div>
+            <div class="form-group">
+                <label for="konsumsi">Konsumsi Mobil (liter/100km):</label>
+                <input type="number" id="konsumsi" step="0.1" placeholder="Contoh: 10">
+            </div>
+            <button onclick="hitungJarak()" class="btn btn-secondary">Hitung Jarak</button>
+            <div id="hasilJarak" class="result"></div>
+        </section>
+
+        <footer>
+            <p>Dibuat dengan Flask & Python | <a href="https://github.com/Fahreza-ux" target="_blank">Fahreza-ux</a></p>
+        </footer>
+    </div>
+
+    <script>
+        function hitungKonsumsi() {
+            const jarak = document.getElementById('jarak').value;
+            const bensin = document.getElementById('bensin').value;
+            
+            // Validasi input
+            if (!jarak || !bensin) {
+                showError('hasilKonsumsi', 'Harap isi semua field!');
+                return;
+            }
+
+            // Kirim request ke backend
+            fetch('/hitung-konsumsi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `jarak=${jarak}&bensin=${bensin}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayResult('hasilKonsumsi', data);
+            })
+            .catch(error => {
+                showError('hasilKonsumsi', 'Terjadi error!');
+            });
+        }
+
+        function hitungJarak() {
+            const bensin = document.getElementById('bensin2').value;
+            const konsumsi = document.getElementById('konsumsi').value;
+            
+            if (!bensin || !konsumsi) {
+                showError('hasilJarak', 'Harap isi semua field!');
+                return;
+            }
+
+            fetch('/hitung-jarak', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `bensin=${bensin}&konsumsi=${konsumsi}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayResult('hasilJarak', data);
+            })
+            .catch(error => {
+                showError('hasilJarak', 'Terjadi error!');
+            });
+        }
+
+        function displayResult(elementId, data) {
+            const resultDiv = document.getElementById(elementId);
+            if (data.success) {
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>${data.hasil} ${data.satuan}</h3>
+                        <p>${data.detail}</p>
+                    </div>
+                `;
+            } else {
+                showError(elementId, data.error);
+            }
+        }
+
+        function showError(elementId, message) {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.innerHTML = `<div class="error">${message}</div>`;
+        }
+    </script>
+</body>
+</html>
