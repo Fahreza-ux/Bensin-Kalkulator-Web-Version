@@ -1,3 +1,9 @@
+## 🚗 Automotive Projects
+
+- [AI Harga Kendaraan](https://github.com/Fahreza-ux/AI-Harga-Kendaraan) - Prediksi harga kendaraan dengan AI
+- [Bensin Kalkulator Web Version](https://github.com/Fahreza-ux/Bensin-Kalkulator-Web-Version) - Version web dari aplikasi ini
+- [Marketplace Sentiment Analyzer](https://github.com/Fahreza-ux/Marketplace-Sentiment-Analyzer) - Project AI lainnya
+
 # Bensin-Kalkulator-Web-Version
 🚀 Cara Menjalankan:
 
